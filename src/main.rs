@@ -4,7 +4,7 @@ fn main() {
     // 变量可变不可变 常量
     // var_mut::run();
     // 数据类型
-    data_type::run()
+    // data_type::run()
     // 函数
     // functions::run();
     // 控制流
@@ -12,7 +12,7 @@ fn main() {
     // 所有权
     // ownership::run();
     // 引用 借用
-    // ref_bor::run();
+    ref_bor::run();
     // 切片
     // slice::run();
     // Struct

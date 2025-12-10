@@ -16,9 +16,15 @@ pub fn run() {
     println!("guess: {}", guess);
     let x = 2.0; // f64
     let y: f32 = 3.0; // f32
+
+    // 字符串类型
+    // '' 用来表示字符 "" 用来表示字符串
     let c = 'z';
     let z = 'ℤ';
     let heart_eyed_cat = '😻';
+    let x = '中';
+    println!("字符大小{}", size_of_val(&x));
+
     let x = (-42.0_f32).sqrt();
     if x.is_nan() {
         println!("NaN");
@@ -33,11 +39,43 @@ pub fn run() {
     // 同类型可以进行运算
     let addition = twenty + twenty_one + twenty_two;
     // 较长的数字可以进行_分割
-    let one_million: i64 = 1_000_000;
+    let _one_million: i64 = 1_000_000;
     println!(
         "{} + {} + {} = {}",
         twenty, twenty_one, twenty_two, addition
     );
+    // 无符号8位整数 二进制为 00000010
+    let a: u8 = 2;
+    let b: u8 = 3;
+
+    // {:08b}: 左高右低输出二进制01 不足8位则高位补0
+    //
+    println!("a value is {:08b}", a);
+    println!("b value is {:08b}", b);
+    println!("(a & b) value is {:08b}", a & b);
+    println!("(a | b) value is {:08b}", a | b);
+    println!("(a ^ b) value is {:08b}", a ^ b);
+    println!("!b value is {:08b}", !b);
+    println!("(a << b) value is {:08b}", a << b);
+    println!("(a >> b) value is {:08b}", a >> b);
+
+    let mut a = a;
+    a <<= b;
+    println!("(a << b) value is {:08b}", a);
+    // let a: u8 = 255;
+    // let b = a >> 7; // ok
+    // let b = a << 7; // ok
+    // let b = a >> 8; // overflow
+    // let b = a << 8; // overflow
+    // 不包含5
+    for i in 1..5 {
+        println!("{}", i)
+    }
+    // 包含5
+    for i in 1..=5 {
+        println!("{}", i)
+    }
+
     // 复合类型
     // 复合类型（compound type）可以将多个值组合成一个类型。Rust 有两种基本的复合类型：元组（tuple）和数组（array）。
     let tup = (500, 6.4, 1);
@@ -50,4 +88,17 @@ pub fn run() {
     println!("Array: {:?}", a);
     let a = [3; 5];
     println!("Array: {}", a[2]);
+    // 表达式 表达式不能包含分号。 语句不需要最后设置分号
+    // 表达式如果不返回任何值，会隐式地返回一个 ()
+    let y = {
+        let x = 3;
+        x + 1
+    };
+    // let v = (let x = 3);
+}
+
+fn add_with_extra(x: i32, y: i32) -> i32 {
+    let x = x + 1; // 语句
+    let y = y + 5; // 语句
+    x + y // 表达式
 }

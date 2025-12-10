@@ -1,4 +1,10 @@
 pub fn run() {
+    // 所有权原则
+    // Rust 中每一个值都被一个变量所拥有，该变量被称为值的所有者
+    // 一个值同时只能被一个变量所拥有，或者说一个值只能拥有一个所有者
+    // 当所有者（变量）离开作用域范围时，之歌值将被丢弃(drop)
+    // 栈 后进先出
+    let _s = "hello";
     let mut arr = [1, 2, 3, 4, 5];
     let arr2 = arr;
     arr[0] = 6;
@@ -8,6 +14,20 @@ pub fn run() {
     }
     println!("{:?}", arr);
     println!("{:?}", arr2);
+    // 并没有发生所有权转移 基本类型在Rust赋值会拷贝值 而不是所有权转移
+    let x = 5;
+    let _y = x;
+    let s1 = String::from("hello");
+    let s2 = s1;
+    println!("{}, world", s2)
+    // 任何的基本类型的组合可以copy, 不需要分配内存或某种形式资源的类型是可以copy
+    // 所有整数类型 比如 u32
+    // 布尔类型，bool 他的值是 true 和 false
+    // 所有浮点类型 比如f64
+    // 字符串类型 char
+    // 元组，当且仅当其包含的类型也是copy的时候 比如(i32，i32)是copy的但(i32,String) 就不是
+    // 不可变引用&T 可变引用&mut T 是不可以copy
+    
 }
 fn own_fn() {
     // 所有权与函数

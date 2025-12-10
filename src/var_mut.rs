@@ -12,7 +12,7 @@ pub fn run() {
     let spaces = spaces.len();
     println!("The value of spaces is: {}", spaces);
     println!("The value of x is: {}", THREE_HOURS_IN_SECONDS);
-    let num = 4;
+    let _num = 4;
     // num 值 跨不了作用域
     get_num();
     // 结构赋值

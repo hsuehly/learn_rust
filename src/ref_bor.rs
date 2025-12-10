@@ -1,4 +1,8 @@
 pub(crate) fn run() {
+    let x = 5;
+    let y = &x;
+    assert_eq!(5, x);
+    assert_eq!(5, *y);
     {
         // 所有权，对 Rust 而言，一个值如果没有实现 Copy，在赋值、传参以及函数返回时会被 Move
         // 引用-借用
