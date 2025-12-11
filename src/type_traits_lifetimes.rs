@@ -37,16 +37,25 @@ pub fn run() {
 
         println!("1 new tweet: {}", tweet.summarize());
     }
-    // 生命周期
+    // 生命周期 是以’开头 如果有& 那么生命周期在&之后 并用空格来将引用参数分隔开
+    // &i32        // 一个引用
+    // &'a i32     // 具有显式生命周期的引用
+    // &'a mut i32 // 具有显式生命周期的可变引用
+    // 1. 每一个引用参数都会获得独自的生命周期
+    // 例如一个引用参数的函数就有一个生命周期标注: fn foo<'a>(x: &'a i32)，两个引用参数的有两个生命周期标注:fn foo<'a, 'b>(x: &'a i32, y: &'b i32), 依此类推。
+    // 2. 若只有一个输入生命周期（函数参数中只有一个引用类型），那么该生命周期会被赋给所有的输出生命周期，也就所有返回值的生命周期等于该输入生命周期
+    // 例如函数 fn foo(x: &i32) -> &i32，x 参数的生命周期会被自动赋给返回值 &i32，因此该函数等同于 fn foo<'a>(x: &'a i32) -> &'a i32
+    // 3. 若存在多个输入生命周期，且其中一个是&self 或 &mut self 则 &self的生命周期被赋给所有的输出生命周期
+    // 拥有 &self 形式的参数，说明该函数是一个 方法，该规则让方法的使用便利度大幅提升
+    //
     {
-        let string1 = String::from("long string is long");
+        let string1 = String::from("abcde");
         // let result;
-
         // {
         //     let string2 = String::from("xyz");
         //     result = longest(string1.as_str(), string2.as_str());
         // }
-        // println!("The longest string is {result}");
+        // println!("The longest string is {}-", result);
     }
     {
         let s = "hello world".to_owned();
@@ -185,7 +194,8 @@ where
     43
 }
 //泛型生命周期 'a 的具体生命周期等同于 x 和 y 的生命周期中较小的那一个
-fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+// 'a: 'b 'a 必须比 'b 活得久
+fn longest<'a: 'b, 'b>(x: &'a str, y: &'a str) -> &'a str {
     if x.len() > y.len() { x } else { y }
 }
 

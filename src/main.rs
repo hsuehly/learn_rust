@@ -26,9 +26,9 @@ fn main() {
     // 字符串
     // strings::run();
     // hash map
-    hash_map::run();
+    // hash_map::run();
     //  泛型 特征 生命周期
-    // type_traits_lifetimes::run()
+    type_traits_lifetimes::run()
     // 闭包和迭代器
     // closures_iterators::run();
 }
