@@ -1,7 +1,9 @@
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{Error, ErrorKind, Read};
+// 使用 HashMap 必须要从标准库里进行引用
 pub fn run() {
+    // 如果预先知道要存储的 KV 对个数，可以使用 HashMap::with_capacity(capacity) 创建指定大小的 HashMap，避免频繁的内存分配和拷贝，提升性能。
     //所有的键必须是相同类型，值也必须都是相同类型
     let mut scores = HashMap::new();
     scores.insert(String::from("Blue"), 10);
@@ -52,6 +54,15 @@ pub fn run() {
                 panic!("Problem opening the file: {other_error:?}");
             }
         });
+    }
+    {
+        let teams_list = vec![
+            ("中国队".to_string(), 100),
+            ("美国队".to_string(), 10),
+            ("日本队".to_string(), 50),
+        ];
+        let teams_map: HashMap<_, _> = teams_list.into_iter().collect();
+        println!("{:?}", teams_map)
     }
 }
 //? 运算符只能被用于返回值与 ? 作用的值相兼容的函数

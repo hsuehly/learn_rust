@@ -20,7 +20,11 @@ struct Rectangle {
 }
 // 可以多个 impl 块
 impl Rectangle {
-    // 所有在 impl 块中定义的函数被称为关联函数（associated function） 关联函数使用 :: 调用
+    // 关联函数使用::调用 方法实用.调用
+    // :: 语法用于关联函数和模块创建的命名空间 和范型::<> 涡轮鱼。
+    //                                      尾巴身子/头
+
+    // new 因为它的第一个参数不是self函数被称为关联函数（associated function） 关联函数使用 :: 调用
     fn new(width: u32, height: u32) -> Rectangle {
         Rectangle { width, height }
     }
@@ -30,8 +34,23 @@ impl Rectangle {
         // &self 的理由跟在函数版本中使用 &Rectangle 是相同的：我们并不想获取所有权，只希望能够读取结构体中的数据，而不是写入。如果想要在方法中改变调用方法的实例，需要将第一个参数改为 &mut self。通过仅仅使用 self 作为第一个参数来使方法获取实例的所有权是很少见的；这种技术通常用在当方法将 self 转换成别的实例的时候，这时我们想要防止调用者在转换之后使用原始的实例
         self.width * self.height
     }
+    // self 表示 Rectangle 的所有权转移到该方法中，这种形式用的较少
+    // &self 表示该方法对 Rectangle 的不可变借用
+    // &mut self 表示可变借用
     fn width(&self) -> bool {
         self.width > 0
+    }
+}
+
+struct Circle {
+    x: f64,
+    y: f64,
+    radius: f64,
+}
+
+impl Circle {
+    fn new(x: f64, y: f64, radius: f64) -> Circle {
+        Circle { x, y, radius }
     }
 }
 pub fn run() {
@@ -51,7 +70,8 @@ pub fn run() {
                     // 实现Copy trait 的类型 的值被复制到user2 那么user1的变量依然可用，但是当 为引用类型的值被移动到user2中 那么user1 不能使用 被回收
         };
         // println!("user1 {:?}", user1);
-        println!("user2 {:?}", user2)
+        println!("user1 {:?}", user1.sign_in_count);
+        println!("user2 {:#?}", user2)
     }
     {
         // 元组结构体（tuple struct）

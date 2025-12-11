@@ -12,7 +12,7 @@ fn main() {
     // 所有权
     // ownership::run();
     // 引用 借用
-    ref_bor::run();
+    // ref_bor::run();
     // 切片
     // slice::run();
     // Struct
@@ -26,7 +26,7 @@ fn main() {
     // 字符串
     // strings::run();
     // hash map
-    // hash_map::run();
+    hash_map::run();
     //  泛型 特征 生命周期
     // type_traits_lifetimes::run()
     // 闭包和迭代器

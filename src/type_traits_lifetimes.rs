@@ -1,5 +1,5 @@
 use std::fmt::{Debug, Display};
-
+// 如果你要使用一个特征的方法，那么你需要将该特征引入当前的作用域中
 pub fn run() {
     {
         let number_list = vec![34, 50, 25, 100, 65];
@@ -10,6 +10,7 @@ pub fn run() {
             }
         }
         println!("The largest is {}", largest);
+        println!("The number_list {:?}", number_list);
     }
     {
         let number_list = vec![34, 50, 25, 100, 65];
@@ -83,6 +84,8 @@ fn largest<T: PartialOrd>(list: &[T]) -> &T {
 
     largest
 }
+// Self 与 self
+//两个self，一个指代当前的实例对象，一个指代特征或者方法类型的别名
 struct Point<T> {
     x: T,
     y: T,
@@ -97,8 +100,22 @@ impl Point<f32> {
         (self.x.powi(2) + self.y.powi(2)).sqrt()
     }
 }
+
+//不可将随机数生成器写成 const fn。
+
+const fn add(a: i32, b: i32) -> i32 {
+    a + b
+}
+const RESULT: i32 = add(5, 10);
+
+//N 就是 const 泛型，定义的语法是 const N: usize，表示 const 泛型 N ，它基于的值类型是 usize
+fn display_array<T: std::fmt::Debug, const N: usize>(array: [T; N]) {
+    println!("{:?}", array)
+}
 pub trait Summary {
     fn summarize_author(&self) -> String;
+    // 在特征中定义具体的方法那么这个方法就是默认实现 其他类型无需再实现该方法 也可以进行重写方法
+    // 默认实现允许调用相同特征中的其他方法，哪怕这些方法没有默认实现
     fn summarize(&self) -> String {
         format!("(Read more from {}...)", self.summarize_author())
     }
@@ -125,7 +142,17 @@ pub struct Tweet {
     pub reply: bool,
     pub retweet: bool,
 }
-
+pub struct Post {
+    pub username: String,
+    pub content: String,
+    pub reply: bool,
+    pub retweet: bool,
+}
+impl Summary for Post {
+    fn summarize_author(&self) -> String {
+        format!("@{}", self.username)
+    }
+}
 impl Summary for Tweet {
     // 重载 直接覆盖原有实现
     // fn summarize(&self) -> String {
@@ -137,11 +164,11 @@ impl Summary for Tweet {
     }
 }
 
-// 适合短小的列子
+// 适合短小的列子  &impl 是语法糖
 pub fn notify(item: &impl Summary) {
     println!("Breaking news! {}", item.summarize());
 }
-// Trait Bound 语法 更直观
+// Trait Bound 语法 更直观 特征约束
 // 通过 + 指定多个 trait bound
 pub fn notify2<T: Summary + Display>(item: &T) {
     println!("Breaking news! {}", item.summarize());
@@ -150,6 +177,7 @@ fn some_function<T: Display + Clone, U: Clone + Debug>(t: &T, u: &U) -> i32 {
     34
 }
 fn some_function2<T, U>(t: &T, u: &U) -> i32
+//  where 在函数返回值后面 用来约束函数的类型
 where
     T: Display + Clone,
     U: Clone + Debug,
@@ -201,3 +229,8 @@ impl<R> MyReader<R> {
         }
     }
 }
+
+// 特征对象的限制
+// 不是所有特征都能拥有特征对象，只有对象安全的特征才行
+// 方法的返回类型不能是 Self
+// 方法没有任何泛型参数

@@ -23,9 +23,10 @@ pub fn run() {
     // 从循环返回值
     let mut counter = 0;
 
+    // loop 是一个表达式，因此可以返回一个值
     let result = loop {
         counter += 1;
-
+        // break 可以单独使用，也可以带一个返回值，有些类似 return
         if counter == 10 {
             break counter * 2;
         }
@@ -34,6 +35,7 @@ pub fn run() {
     println!("The result is {result}");
 
     //循环标签：在多个循环之间消除歧义
+    //
     let mut count = 0;
     'counting_up: loop {
         println!("count = {count}");
@@ -64,7 +66,7 @@ pub fn run() {
     }
 
     println!("LIFTOFF!!!");
-
+    // for 循环会消耗所有权 一般使用引用 .iter() 不可变借用   .iter_mut() 可变借用
     for number in (1..4).rev() {
         println!("{number}!");
     }

@@ -79,11 +79,44 @@ pub fn run() {
     // 复合类型
     // 复合类型（compound type）可以将多个值组合成一个类型。Rust 有两种基本的复合类型：元组（tuple）和数组（array）。
     let tup = (500, 6.4, 1);
-
+    println!("tup0 {}", tup.0);
+    // 解构
     let (x, y, z) = tup;
 
-    println!("The value of tup is: {}", tup.0);
-    println!("The value of y is: {}", y);
+    // === 数组 ===
+    let arr_a = [String::from("rust"), String::from("java")];
+    let arr_b = arr_a; // 发生 Move！所有权移交给了 arr_b
+
+    // println!("{:?}", arr_a); // ❌ 报错：arr_a 的值已经被移动了
+
+    // === 元组 ===
+    let tup_a = (String::from("hello"), 100);
+    let tup_b = tup_a; // 发生 Move！
+    // println!("{:?}", tup_a); // ❌ 报错：tup_a 已经被移动
+    //
+    //  局部移动
+    let t = (String::from("A"), String::from("B"));
+    // 我们只把第一个字段的所有权移动给 a
+    let (a, _) = t;
+
+    println!("a is {}", a); // ✅ 可以使用 a
+    // println!("{:?}", t); // ❌ t 作为一个整体已经部分失效了，不能再用了
+
+    let arr = [String::from("A"), String::from("B")];
+
+    // ❌ 下面这行会报错：cannot move out of index of array
+    // let first = arr[0];
+
+    // 解决方案 1：把整个数组的所有权都拿走（使用迭代器）
+    // for s in arr {
+    //     println!("{}", s);
+    // }
+
+    // 解决方案 2：如果你只想拿一个，不想销毁数组，必须用引用
+    let first_ref = &arr[0];
+
+    // 解决方案 3：如果你必须拿走其中一个的所有权，可以用 Option + replace 大法
+    // (需要把数组定义为 [Option<String>; 2])
     let a: [i32; 5] = [1, 2, 3, 4, 5];
     println!("Array: {:?}", a);
     let a = [3; 5];
@@ -95,10 +128,29 @@ pub fn run() {
         x + 1
     };
     // let v = (let x = 3);
+    array_type()
 }
 
 fn add_with_extra(x: i32, y: i32) -> i32 {
     let x = x + 1; // 语句
     let y = y + 5; // 语句
     x + y // 表达式
+}
+
+fn array_type() {
+    // 数组是 长度固定 元素必须相同的类型 依次线形排列
+    // 数组是存储在栈上 动态数组是堆上
+    let a = [1, 2, 3, 4, 5];
+    // 数组的类型声明 i32 是元素类型，分号后面的数字 5 是数组长度
+    let b: [i32; 5] = [1, 2, 3, 4, 5];
+    // 代表数组里面有5个元素为3的数组初始化
+    let c = [3; 5];
+    println!("{:?}", c);
+    // 报错， 数组的array=[3;5] 写法 底层是copy进行复制的而String没有实现copy
+    // let array = [String::from("rust is good!"); 8];
+    // 快捷写法
+    let array: [String; 4] = std::array::from_fn(|_| String::from("rust is good"));
+
+    // 数组切片
+    let slice: &[i32] = &a[1..3];
 }
