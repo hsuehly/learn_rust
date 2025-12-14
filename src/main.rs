@@ -30,5 +30,9 @@ fn main() {
     //  泛型 特征 生命周期
     // type_traits_lifetimes::run()
     // 闭包和迭代器
-    closures_iterators::run();
+    // closures_iterators::run();
+    // 智能指针
+    // smart_pointers::run();
+    // 多线程
+    multithreading::run();
 }
