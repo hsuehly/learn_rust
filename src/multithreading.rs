@@ -1,4 +1,13 @@
-use std::{sync::mpsc, thread, time::Duration};
+use std::{
+    sync::{Arc, Mutex, mpsc},
+    thread,
+    time::Duration,
+};
+
+#[derive(Debug)]
+struct MyBox(*const u8);
+unsafe impl Send for MyBox {}
+unsafe impl Sync for MyBox {}
 pub fn run() {
     // Rust 的线程模型是 1:1 模型
     // main 线程若是结束，则所有子线程都将被终止
@@ -83,5 +92,78 @@ pub fn run() {
 
         println!("receive {}", rx.recv().unwrap());
         handle.join().unwrap();
+    }
+    {
+        // 互斥锁 数据被Mutex所拥有 访问内部的数据，需要使用方法m.lock()向m申请一个锁, 该方法会阻塞当前线程，直到获取到锁
+        let m = Mutex::new(5);
+        {
+            // 获取锁，然后deref为`m`的引用
+            // lock返回的是Result
+            // 与lock方法不同，try_lock会尝试去获取一次锁，如果无法获取会返回一个错误，因此不会发生阻塞
+            let mut num = m.lock().unwrap();
+            *num += 1;
+            // 锁自动被drop
+        }
+        println!("num = {:?}", m);
+    }
+    {
+        // Mutex<T>可以支持修改内部数据 Rc<T>/RefCell<T>用于单线程内部可变性， Arc<T>/Mutex<T>用于多线程内部可变性
+        // 通过`Rc`实现`Mutex`的多所有权
+        let counter = Arc::new(Mutex::new(5));
+        let mut handles = vec![];
+        for _ in 1..10 {
+            let counter = Arc::clone(&counter);
+            // 创建子线程，并将`Mutex`的所有权拷贝传入到子线程中
+            let handle = thread::spawn(move || {
+                let mut num = counter.lock().unwrap();
+
+                *num += 1;
+            });
+            handles.push(handle);
+        }
+
+        for handle in handles {
+            handle.join().unwrap();
+        }
+        // 输出最终的计数结果
+        println!("Result: {}", *counter.lock().unwrap());
+    }
+    /*
+    * RwLock:
+    同时允许多个读，但最多只能有一个写
+    读和写不能同时存在
+    读可以使用read、try_read，写write、try_write, 在实际项目中，try_xxx会安全的多
+
+    */
+    /*
+    * 实现Send的类型可以在线程间安全的传递其所有权
+    实现Sync的类型可以在线程间安全的共享(通过引用)
+    潜在的依赖：一个类型要在线程间安全的共享的前提是，指向它的引用必须能在线程间传递。因为如果引用都不能被传递，我们就无法在多个线程间使用引用去访问同一个数据了。
+    */
+    /*
+    * 裸指针两者都没实现，因为它本身就没有任何安全保证
+    UnsafeCell不是Sync，因此Cell和RefCell也不是
+    Rc两者都没实现(因为内部的引用计数器不是线程安全的)
+    自定义复合类型 只要复合类型中有一个成员不是Send或Sync，那么该复合类型也就不是Send或Sync。
+    手动实现 Send 和 Sync 是不安全的，通常并不需要手动实现 Send 和 Sync trait，实现者需要使用unsafe小心维护并发安全保证
+    */
+    {
+        // let p = 5 as *mut u8;
+        // let t = thread::spawn(move || println!("{:?}", p));
+        // t.join().unwrap();
+        // *mut u8` cannot be sent between threads safely
+        //
+        let p = &MyBox(5 as *const u8);
+        let v = Arc::new(Mutex::new(p));
+        let t = thread::spawn(move || {
+            let _v1 = v.lock().unwrap();
+        });
+        t.join().unwrap();
+        /*
+        * 实现Send的类型可以在线程间安全的传递其所有权, 实现Sync的类型可以在线程间安全的共享(通过引用)
+        绝大部分类型都实现了Send和Sync，常见的未实现的有：裸指针、Cell、RefCell、Rc 等
+        可以为自定义类型实现Send和Sync，但是需要unsafe代码块
+        可以为部分 Rust 中的类型实现Send、Sync，但是需要使用newtype，例如文中的裸指针例子
+        */
     }
 }
