@@ -1,8 +1,8 @@
-use learn_rust::{unsafer::run, *};
+use learn_rust::*;
 fn main() {
     // guess_game::run();
     // 变量可变不可变 常量
-    // var_mut::run();
+    var_mut::run();
     // 数据类型
     // data_type::run()
     // 函数
@@ -40,5 +40,5 @@ fn main() {
     // async/await
     // async_await::run();
     // web 服务器
-    web_server::run();
+    // web_server::run();
 }
